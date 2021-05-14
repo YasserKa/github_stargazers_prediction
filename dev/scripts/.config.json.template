@@ -1,3 +1,6 @@
 {
-    "git_token": "my_token"
+    "git_token": "my_token",
+    "least_stargazers": 50,
+    "number_of_repos_to_extract": 1000
+    "fetch_contributors": true
 }

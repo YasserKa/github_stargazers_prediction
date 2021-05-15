@@ -119,7 +119,8 @@ def add_repos_details_using_graphql(repos_json):
         try:
             for repo_json in r.json()['data'].values():
                 full_name = f"{repo_json['owner']['login']}/{repo_json['name']}"
-                repos_json[full_name]['graph_ql'] = repo_json
+                filter_graphql_json(repo_json)
+                repos_json[full_name].update(repo_json)
         except Exception:
             print("request timeout, redoing")
             continue
@@ -129,6 +130,20 @@ def add_repos_details_using_graphql(repos_json):
             break
 
         count_repos += repos_per_request
+
+
+# move values to top level keys
+def filter_graphql_json(repo_json):
+    for key, value in repo_json.items():
+        while True:
+            value_type = type(value)
+            if value_type == dict:
+                value = list(value.values())[0]
+            elif value_type == list:
+                value = value[0]
+            else:
+                repo_json[key] = value
+                break
 
 
 def get_repo_graphql_query(repo_id, owner, name):

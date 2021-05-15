@@ -21,80 +21,29 @@ case, 5000 will be used.
 An example of what you might get for each repository:
 
 ```
-      "googleapis/google-api-java-client-services": {
-            "owner": "googleapis",
-            "name": "google-api-java-client-services",
-            "id": "id_147399159",
-            "full_name": "googleapis/google-api-java-client-services",
-            "contributors_count": 15,
-            "graph_ql": {
-                  "name": "google-api-java-client-services",
-                  "watchers": {
-                        "totalCount": 43
-                  },
-                  "fork_count": 217,
-                  "owner": {
-                        "login": "googleapis"
-                  },
-                  "created_at": "2018-09-04T19:11:33Z",
-                  "last_commit": {
-                        "target": {
-                              "history": {
-                                    "nodes": [
-                                          {
-                                                "pushedDate": "2021-05-14T11:14:16Z"
-                                          }
-                                    ]
-                              }
-                        }
-                  },
-                  "assigned_to_issues": {
-                        "totalCount": 121
-                  },
-                  "stargazer_count": 246,
-                  "closed_pull_requests_count": {
-                        "totalCount": 1229
-                  },
-                  "merged_pull_requests_count": {
-                        "totalCount": 6128
-                  },
-                  "open_pull_requests_count": {
-                        "totalCount": 61
-                  },
-                  "branches": {
-                        "totalCount": 82
-                  },
-                  "tags": {
-                        "totalCount": 0
-                  },
-                  "labels": {
-                        "totalCount": 212
-                  },
-                  "open_issues_count": {
-                        "totalCount": 46
-                  },
-                  "closed_issues_count": {
-                        "totalCount": 695
-                  },
-                  "commits_since_one_year": {
-                        "target": {
-                              "history": {
-                                    "totalCount": 3143
-                              }
-                        }
-                  },
-                  "mentionableUsers": {
-                        "totalCount": 130
-                  },
-                  "disk_usage_in_kbs": 96017,
-                  "total_commits": {
-                        "target": {
-                              "history": {
-                                    "totalCount": 6162
-                              }
-                        }
-                  }
-            }
+      "flight-recorder/health-report": {
+            "owner": "flight-recorder",
+            "name": "health-report",
+            "id": "id_255951864",
+            "full_name": "flight-recorder/health-report",
+            "contributors_count": 1,
+            "watchers": 7,
+            "fork_count": 10,
+            "created_at": "2020-04-15T15:02:17Z",
+            "last_commit": "2021-05-15T09:56:45Z",
+            "assigned_to_issues": 2,
+            "stargazer_count": 60,
+            "closed_pull_requests_count": 0,
+            "merged_pull_requests_count": 0,
+            "open_pull_requests_count": 1,
+            "branches": 1,
+            "tags": 0,
+            "labels": 9,
+            "open_issues_count": 0,
+            "closed_issues_count": 0,
+            "commits_since_one_year": 10,
+            "mentionableUsers": 1,
+            "disk_usage_in_kbs": 43,
+            "total_commits": 20
       },
-
 ```

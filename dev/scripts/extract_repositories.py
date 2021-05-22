@@ -231,10 +231,27 @@ def get_repo_graphql_query(repo_id, owner, name):
     return query_string
 
 
+def update_repos_content(repos):
+    for repo_name in repos:
+        size = 0
+
+        if repos[repo_name]['readme_content_main'] is not None:
+            size = len(repos[repo_name]['readme_content_main'])
+
+        if repos[repo_name]['readme_content_master'] is not None:
+            size = len(repos[repo_name]['readme_content_master'])
+
+        repos[repo_name]['readme_size'] = size
+
+        del repos[repo_name]['readme_content_master']
+        del repos[repo_name]['readme_content_main']
+
+
 def main():
     repos = get_repos()
 
     add_repos_details_using_graphql(repos)
+    update_repos_content(repos)
 
     with open('repos.json', mode='w') as _file:
         json.dump(repos, _file, indent=6)

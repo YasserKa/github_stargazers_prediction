@@ -17,13 +17,13 @@ headers = {}
 def load_config():
     global config, headers
 
-    if not os.path.isfile('.config.json'):
-        print(".config.json is needed, put an empty token, if you don't want to take"
-              "advantage of the authorized")
+    if not os.path.isfile('../../.config.json'):
+        print(
+            ".config.json is needed at the root of the project, check .config.json.template")
         exit()
 
-    with open('.config.json') as json_file:
-        config = json.load(json_file)
+    with open('../../.config.json') as json_file:
+        config = json.load(json_file)['git_extraction_script']
     headers["Authorization"] = f"token {config['git_token']}"
 
 
@@ -138,9 +138,15 @@ def filter_graphql_json(repo_json):
         while True:
             value_type = type(value)
             if value_type == dict:
-                value = list(value.values())[0]
+                if value:
+                    value = list(value.values())[0]
+                else:
+                    value = 0
             elif value_type == list:
-                value = value[0]
+                if len(value) == 0:
+                    value = 0
+                else:
+                    value = value[0]
             else:
                 repo_json[key] = value
                 break
@@ -155,6 +161,58 @@ def get_repo_graphql_query(repo_id, owner, name):
         totalCount
     }
     fork_count: forkCount
+    amount_repos_owner_have: owner {
+    repositories {
+      totalCount
+    }
+  }
+    readme_content_master: object(expression: "master:README.md") {
+      ... on Blob {
+        text
+      }
+    }
+    readme_content_main: object(expression: "main:README.md") {
+      ... on Blob {
+        text
+      }
+    }
+   is_verified_organization: owner {
+    ... on Organization {
+     isVerified
+
+    }
+  }
+  memebers_with_roles_in_organization: owner {
+    ... on Organization {
+      membersWithRole {
+        totalCount
+      }
+    }
+  }
+    commits_comments_for_user: owner {
+      ... on User {
+     commitComments {
+      totalCount
+    }
+
+    }
+
+  }
+      follower_for_user: owner {
+      ... on User {
+     followers {
+      totalCount
+    }
+
+    }
+  }
+    main_language: languages(first:1) {
+      edges {
+        node {
+          name
+        }
+      }
+    }
     owner {
     login
     }

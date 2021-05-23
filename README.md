@@ -1,3 +1,32 @@
+[Dask](https://docs.dask.org/en/latest/) is used to ensure parallelization
+during training the ML models.
+
+## Hosting the application in OpenStack
+```
+    "identifier": "my_instances",
+    "flavor": "medium",
+    "private_net": "Network",
+    "image_id": "123-123-123",
+    "key_name": "key-pair",
+    "number_of_dask_workers": 3
+```
+
+#### Tasks
+
+- Make sure to update cloud-cfg.txt by inserting your public key
+- Make sure to have OpenStack packages installed, check the instructions for Ubuntu [here](https://docs.openstack.org/install-guide/environment-packages-ubuntu.html).
+- You need to source  your **v3** Runtime Configuration (RC) file, before running
+`start_instances.py`. You can get it from the SSC site (Top left frame Project
+-> API Access -> Download OpenStack RC File).
+- If you haven't set a password for your API, you can set it
+[here](https:///cloud.snic.se/), Left frame, under Services "Set your API
+password".
+- Now you can create the instances by
+```
+python3 start_instances 
+```
+
+
 ## Getting repositories
 ```
 {
@@ -21,29 +50,36 @@ case, 5000 will be used.
 An example of what you might get for each repository:
 
 ```
-      "flight-recorder/health-report": {
-            "owner": "flight-recorder",
-            "name": "health-report",
-            "id": "id_255951864",
-            "full_name": "flight-recorder/health-report",
-            "contributors_count": 1,
-            "watchers": 7,
-            "fork_count": 10,
-            "created_at": "2020-04-15T15:02:17Z",
-            "last_commit": "2021-05-15T09:56:45Z",
-            "assigned_to_issues": 2,
-            "stargazer_count": 60,
-            "closed_pull_requests_count": 0,
-            "merged_pull_requests_count": 0,
-            "open_pull_requests_count": 1,
-            "branches": 1,
-            "tags": 0,
-            "labels": 9,
-            "open_issues_count": 0,
-            "closed_issues_count": 0,
-            "commits_since_one_year": 10,
-            "mentionableUsers": 1,
-            "disk_usage_in_kbs": 43,
-            "total_commits": 20
-      },
+"alexZajac/react-native-skeleton-content-nonexpo": {
+      "owner": "alexZajac",
+      "name": "react-native-skeleton-content-nonexpo",
+      "id": "id_200399711",
+      "full_name": "alexZajac/react-native-skeleton-content-nonexpo",
+      "contributors_count": 8,
+      "watchers": 2,
+      "fork_count": 31,
+      "amount_repos_owner_have": 53,
+      "is_verified_organization": 0,
+      "memebers_with_roles_in_organization": 0,
+      "commits_comments_for_user": 0,
+      "follower_for_user": 46,
+      "main_language": "JavaScript",
+      "created_at": "2019-08-03T16:54:24Z",
+      "last_commit": "2021-05-22T07:54:33Z",
+      "assigned_to_issues": 1,
+      "stargazer_count": 113,
+      "closed_pull_requests_count": 3,
+      "merged_pull_requests_count": 17,
+      "open_pull_requests_count": 1,
+      "branches": 1,
+      "tags": 11,
+      "labels": 10,
+      "open_issues_count": 4,
+      "closed_issues_count": 12,
+      "commits_since_one_year": 57,
+      "mentionableUsers": 5,
+      "disk_usage_in_kbs": 1087,
+      "total_commits": 106,
+      "readme_size": 8050
+},
 ```

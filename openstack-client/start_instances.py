@@ -21,12 +21,12 @@ nova = None
 def load_config():
     global config
 
-    if not os.path.isfile('../../.config.json'):
+    if not os.path.isfile('../.config.json'):
         print(
             ".config.json is needed at the root of the project, check .config.json.template")
         exit()
 
-    with open('../../.config.json') as json_file:
+    with open('../.config.json') as json_file:
         config = json.load(json_file)['open_stack_instances']
 
 

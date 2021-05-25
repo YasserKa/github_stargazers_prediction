@@ -1,16 +1,23 @@
 - hosts: all
-  
+  become: no
+  gather_facts: no
+  vars_prompt:
+    - name: git_user
+      private: no
+    - name: git_pass
+      private: yes
+
   tasks:
-   
+
    - name: Generate hosts file
      lineinfile: dest=/etc/hosts
                  regexp='.*{{ item }}$'
                  line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
-                 state=present            
+                 state=present
      when: hostvars[item].ansible_default_ipv4.address is defined
      with_items: "{{groups['all']}}"
      become: true
-     
+
    - name: Set hostname
      hostname: name="{{inventory_hostname}}"
      become: true
@@ -22,33 +29,20 @@
    - name: Download git repository
      become: true
      git:
-      repo: 'https://github.com/sztoor/model_serving.git'
-      dest: /model_serving 
+       repo: 'https://{{git_user|urlencode()}}:{{git_pass|urlencode()}}@github.com/YasserKa/github_stargazers_prediction.git'
+       dest: /github_stargazers_prediction
 
-      
-   - name: Change ownership of a directory
-     become: true
-     file:
-      path: /technical-training
-      state: directory
-      recurse: yes
-      owner: appuser
-      group: appuser
+- hosts: prodserver
 
-- hosts: prod_server
- 
-  vars_files:
-   - setup_var.yml  
-  
-  tasks:  
+  tasks:
    - name: Extra packages
-     apt: pkg={{item}} state=latest update_cache=true 
+     apt: pkg={{item}} state=latest update_cache=true
      with_items:
       - apt-transport-https
       - ca-certificates
       - curl
       - software-properties-common
-     become: true  
+     become: true
 
    - name: apt update
      apt: update_cache=yes upgrade=dist
@@ -60,7 +54,7 @@
       state: present
      become: true
 
-   - name: Add Docker repository 
+   - name: Add Docker repository
      command: add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
      become: true
 
@@ -68,40 +62,37 @@
      apt: update_cache=yes upgrade=dist
      become: true
 
-   - name: Install Docker  
+   - name: Install Docker
      apt: pkg=docker-ce state=present update_cache=true allow_unauthenticated=yes
      become: true
 
-   - name: Download docker-compose 
+   - name: Download docker-compose
      become: yes
-     get_url:        
+     get_url:
       url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_system}}-{{ansible_architecture}}"
       dest: /usr/local/bin/docker-compose
-      mode: +x  
+      mode: +x
 
    - name: Building containers
      become: true
      shell: docker build .
-     args: 
-      chdir: /model_serving/ci_cd/production_server
+     args:
+      chdir: /github_stargazers_prediction/ci_cd/production_server
 
    - name: Running containers
      become: true
-     shell: docker-compose up -d 
-     args: 
-      chdir: /model_serving/ci_cd/production_server 
+     shell: docker-compose up -d
+     args:
+      chdir: /github_stargazers_prediction/ci_cd/production_server
 
-- hosts: dev_server
-  
-  vars_files:
-   - setup_var.yml
+- hosts: devserver
 
   tasks:
    - name: Extra packages
-     apt: pkg=python3-pip state=latest update_cache=true  
+     apt: pkg=python3-pip state=latest update_cache=true
      become: true
 
    - name: Install ML packages
      become: true
-     pip: 
+     pip:
       name: keras, tensorflow, numpy, future

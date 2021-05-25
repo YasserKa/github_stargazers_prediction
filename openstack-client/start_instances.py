@@ -115,19 +115,81 @@ def print_instance_ip(instance):
           instance.status + " state" + " ip address: " + ip_address)
 
 
+'''
+    template example:
+
+    [servers]
+    prodserver ansible_host=192.168.2.206
+    devserver ansible_host=192.168.2.148
+    worker1 ansible_host=192.168.2.148
+
+    [workers]
+    worker1
+
+    [prodserver]
+    prodserver ansible_connection=ssh ansible_user=appuser
+
+    [devserver]
+    devserver ansible_connection=ssh ansible_user=appuser
+
+    [worker1]
+    worker1 ansible_connection=ssh ansible_user=appuser
+
+'''
+
+
+def write_ansible_hosts_file():
+    private_net = config['private_net']
+    file_content = "[servers]\n"
+    ip_address = None
+
+    # create the hosts
+    for name, instance in instances.items():
+        for network in instance.networks[private_net]:
+            if re.match('\d+\.\d+\.\d+\.\d+', network):
+                ip_address = network
+
+        # _ is removed, because ansible doesn't like the character
+        file_content += f"{name.replace('_', '')} " \
+            f"ansible_host={ip_address}\n"
+
+    file_content += "\n"
+    # workers group
+    file_content += "[workers]\n"
+    for name in instances.keys():
+        name = name.replace('_', '')
+        if name[:10] == 'worker':
+            file_content += f"{name}\n"
+
+    file_content += "\n"
+    # host names
+    for name in instances.keys():
+        name = name.replace('_', '')
+        file_content += f"[{name}]\n"
+        file_content += f"{name} ansible_connection=ssh " \
+            "ansible_user=appuser\n"
+
+    with open('hosts', 'w') as f:
+        f.write(file_content)
+
+    print("Created hosts file")
+
+
 def main():
     load_config()
     authenticate_user()
     build_instance('prod_server')
     build_instance('dev_server')
 
-    for i in range(config['number_of_dask_workers']):
-        build_instance(f"dask_worker_{i}")
+    for i in range(config['number_of_workers']):
+        build_instance(f"worker_{i}")
 
     wait_for_instances_build()
 
     for instance in instances.values():
         print_instance_ip(instance)
+
+    write_ansible_hosts_file()
 
 
 if __name__ == '__main__':

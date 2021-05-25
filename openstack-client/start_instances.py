@@ -158,7 +158,7 @@ def write_ansible_hosts_file():
     file_content += "[workers]\n"
     for name in instances.keys():
         name = name.replace('_', '')
-        if name[:10] == 'worker':
+        if name[:6] == 'worker':
             file_content += f"{name}\n"
 
     file_content += "\n"
@@ -167,7 +167,7 @@ def write_ansible_hosts_file():
         name = name.replace('_', '')
         file_content += f"[{name}]\n"
         file_content += f"{name} ansible_connection=ssh " \
-            "ansible_user=appuser\n"
+            "ansible_user=appuser\n\n"
 
     with open('hosts', 'w') as f:
         f.write(file_content)

@@ -43,3 +43,19 @@
         compose:
           - /github_stargazers_prediction/ci_cd/production_server/docker-compose.yml
           - /dask-docker/docker-compose.yml
+
+  - name: Install python packages for dev host
+    pip:
+      requirements: /github_stargazers_prediction/requirements.txt
+
+  - name: Install python packages for dev host
+    pip:
+      requirements: /github_stargazers_prediction/requirements.txt
+
+  - name: Extract repos ever day
+    ansible.builtin.cron:
+      name: "extract repo"
+      minute: "0"
+      hour: "0"
+      day: "*"
+      job: "cd /github_stargazers_prediction/; python3 extract_repositories.py"

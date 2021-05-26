@@ -1,0 +1,22 @@
+- name: Generate hosts file
+  lineinfile: dest=/etc/hosts
+              regexp='.*{{ item }}$'
+              line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+              state=present
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: "{{groups['all']}}"
+  become: true
+
+- name: Set hostname
+  hostname: name="{{inventory_hostname}}"
+  become: true
+
+- name: apt update
+  apt: update_cache=yes upgrade=dist
+  become: true
+
+- name: Download git repository
+  become: true
+  git:
+    repo: 'https://{{git_user|urlencode()}}:{{git_pass|urlencode()}}@github.com/YasserKa/private_git.git'
+    dest: /github_stargazers_prediction

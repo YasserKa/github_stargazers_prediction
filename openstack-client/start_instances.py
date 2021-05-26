@@ -140,7 +140,12 @@ def print_instance_ip(instance):
 
 def write_ansible_hosts_file():
     private_net = config['private_net']
-    file_content = "[servers]\n"
+    file_content = \
+        '''
+    [all:vars]
+    ansible_python_interpreter=/usr/bin/python3\n
+ '''
+    file_content += "[servers]\n"
     ip_address = None
 
     # create the hosts
@@ -169,10 +174,10 @@ def write_ansible_hosts_file():
         file_content += f"{name} ansible_connection=ssh " \
             "ansible_user=appuser\n\n"
 
-    with open('hosts', 'w') as f:
+    with open('inventory.ini', 'w') as f:
         f.write(file_content)
 
-    print("Created hosts file")
+    print("Created inventory file")
 
 
 def main():

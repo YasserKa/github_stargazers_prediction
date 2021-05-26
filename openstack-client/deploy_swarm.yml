@@ -19,7 +19,7 @@
 
 - name: add workers to the swarm
   become: yes
-  hosts: workers:prodserver
+  hosts: workers
   ignore_errors: yes
   roles:
     - docker-swarm-add-worker

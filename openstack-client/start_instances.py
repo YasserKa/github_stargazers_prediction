@@ -181,7 +181,6 @@ ansible_python_interpreter=/usr/bin/python3\n\n'''
 def main():
     load_config()
     authenticate_user()
-    build_instance('prod_server')
     build_instance('dev_server')
 
     for i in range(config['number_of_workers']):

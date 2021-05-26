@@ -1,6 +1,5 @@
 - hosts: all
   become: no
-  gather_facts: no
   roles:
     - common
     - docker-install
@@ -15,35 +14,19 @@
   become: yes
   roles:
     - docker-swarm-init
-  tasks:
 
-  - name: Create registry
-    become: yes
-    community.docker.docker_swarm_service:
-      name: registry
-      image: registry:2
-      publish:
-        - published_port: 5000
-          target_port: 5000
+  tasks:
 
 - name: add workers to the swarm
   become: yes
   hosts: workers:prodserver
+  ignore_errors: yes
   roles:
     - docker-swarm-add-worker
 
 - hosts: devserver
   gather_facts: no
   tasks:
-    - name: Extra packages
-      apt: pkg=python3-pip state=latest update_cache=true
-      become: true
-
-    - name: Installing for docker compose
-      become: yes
-      pip:
-       name: docker, jsondiff, docker-compose
-
      # Dask
     - name: Download git repository
       become: true
@@ -52,18 +35,6 @@
         dest: /dask-docker
 
     # Dev
-    - name: dev build images
-      become: yes
-      shell:
-       cmd: docker-compose build
-       chdir: /github_stargazers_prediction/ci_cd/production_server/
-
-    - name: push dev images to registery
-      become: yes
-      shell:
-        cmd: docker-compose push
-        chdir: /github_stargazers_prediction/ci_cd/production_server
-
     - name: Deploy stack from compose file
       become: yes
       community.docker.docker_stack:
@@ -71,3 +42,4 @@
         name: mystack
         compose:
           - /github_stargazers_prediction/ci_cd/production_server/docker-compose.yml
+          - /dask-docker/docker-compose.yml

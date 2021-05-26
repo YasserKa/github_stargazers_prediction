@@ -15,8 +15,9 @@
   apt: update_cache=yes upgrade=dist
   become: true
 
-- name: Download git repository
-  become: true
-  git:
-    repo: 'https://{{git_user|urlencode()}}:{{git_pass|urlencode()}}@github.com/YasserKa/private_git.git'
-    dest: /github_stargazers_prediction
+- name: Checkout branch
+  become: yes
+  ignore_errors: yes
+  shell: git clone --branch cloud_architecture https://{{git_user|urlencode()}}:{{git_pass|urlencode()}}@github.com/YasserKa/github_stargazers_prediction.git
+  args:
+   chdir: /

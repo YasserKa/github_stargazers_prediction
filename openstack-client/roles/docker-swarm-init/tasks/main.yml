@@ -1,4 +1,13 @@
 ---
+- name: Install pip3-pip
+  apt: pkg=python3-pip state=latest update_cache=true
+  become: true
+
+- name: Install python packages for ansible's docker module
+  become: yes
+  pip:
+   name: docker, jsondiff, docker-compose
+
 - name: Check if Swarm has already been Initialized
   shell: docker node ls
   register: swarm_status
@@ -22,4 +31,3 @@
   shell: docker swarm join-token --quiet worker
   register: worker_token
   tags: swarm
-

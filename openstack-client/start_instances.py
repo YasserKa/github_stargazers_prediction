@@ -141,10 +141,8 @@ def print_instance_ip(instance):
 def write_ansible_hosts_file():
     private_net = config['private_net']
     file_content = \
-        '''
-    [all:vars]
-    ansible_python_interpreter=/usr/bin/python3\n
- '''
+        '''[all:vars]
+ansible_python_interpreter=/usr/bin/python3\n\n'''
     file_content += "[servers]\n"
     ip_address = None
 

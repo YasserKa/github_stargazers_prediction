@@ -15,7 +15,6 @@
   roles:
     - docker-swarm-init
 
-  tasks:
 
 - name: add workers to the swarm
   become: yes
@@ -31,7 +30,7 @@
     - name: Download git repository
       become: true
       git:
-        repo: 'https://github.com/dask/dask-docker'
+        repo: 'https://github.com/YasserKa/dask-docker'
         dest: /dask-docker
 
     # Dev

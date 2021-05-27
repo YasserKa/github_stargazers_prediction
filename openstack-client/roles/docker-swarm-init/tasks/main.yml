@@ -6,7 +6,7 @@
 - name: Install python packages for ansible's docker module
   become: yes
   pip:
-   name: docker, jsondiff, docker-compose
+   name: docker, jsondiff, docker-compose, blosc==1.9.2
 
 - name: Check if Swarm has already been Initialized
   shell: docker node ls

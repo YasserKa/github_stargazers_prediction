@@ -182,6 +182,7 @@ def main():
     load_config()
     authenticate_user()
     build_instance('dev_server')
+    build_instance('prod_server')
 
     for i in range(config['number_of_workers']):
         build_instance(f"worker_{i}")

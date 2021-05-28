@@ -8,13 +8,39 @@
       private: no
     - name: git_pass
       private: yes
-
+  vars_prompt:
+    - name: docker_user
+      private: no
+    - name: docker_pass
+      private: yes
 
 - hosts: devserver
   become: yes
   roles:
     - docker-swarm-init
 
+# Setup the prod server
+# TODO: Make it join the swarm to make the services scalable, figure out how to
+# seperate the networks and services among nodes?
+- hosts: prodserver
+   - name: Download docker-compose
+     become: yes
+     get_url:
+      url: "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-{{ansible_system}}-{{ansible_architecture}}"
+      dest: /usr/local/bin/docker-compose
+      mode: +x
+
+   - name: Building containers
+     become: true
+     shell: docker build .
+     args:
+      chdir: /github_stargazers_prediction/production
+
+   - name: Running containers
+     become: true
+     shell: docker-compose up -d
+     args:
+      chdir: /github_stargazers_prediction/production
 
 - name: add workers to the swarm
   become: yes
@@ -33,28 +59,81 @@
         repo: 'https://github.com/YasserKa/dask-docker'
         dest: /dask-docker
 
-    # Dev
     - name: Deploy stack from compose file
       become: yes
       community.docker.docker_stack:
         state: present
         name: mystack
         compose:
-          - /github_stargazers_prediction/ci_cd/production_server/docker-compose.yml
           - /dask-docker/docker-compose.yml
 
     - name: Install python packages for dev host
       pip:
         requirements: /github_stargazers_prediction/requirements.txt
 
-    - name: Install python packages for dev host
-      pip:
-        requirements: /github_stargazers_prediction/requirements.txt
-
-    - name: Extract repos ever day
+    # TODO: make it also train the model and push to production server
+    - name: Extract repos every day
       ansible.builtin.cron:
         name: "extract repo"
         minute: "0"
         hour: "0"
         day: "*"
         job: "cd /github_stargazers_prediction/; python3 extract_repositories.py"
+
+# GIT HOOKS
+- hosts: devserver
+   tasks:
+    - name: Generate SSH keys at dev server
+      shell: ssh-keygen -b 2048 -f /home/appuser/.ssh/id_rsa -t rsa -q -N ""
+      args:
+        creates: /home/appuser/.ssh/id_rsa
+
+    - name: Copy Public Key Locally
+      fetch:
+        src: /home/appuser/.ssh/id_rsa.pub
+        dest: /tmp/
+        flat: yes
+
+     - name: create directory for repo
+       ansible.builtin.shell: mkdir /home/appuser/my_project
+       args:
+         creates: /home/appuser/my_project
+
+     - name: git init
+       ansible.builtin.shell: git init
+       args:
+         chdir: /home/appuser/my_project
+         creates: /home/appuser/my_project/.git
+
+- hosts: prodserver
+  tasks:
+
+   - name: Append Public key in authorized_keys file to prodserver
+     authorized_key:
+       user: appuser
+       state: present
+       key: "{{ lookup('file', '/tmp/id_rsa.pub') }}"
+
+
+    - name: create directory for bare repo
+      ansible.builtin.shell: mkdir /home/appuser/my_project
+      args:
+        creates: /home/appuser/my_project
+
+    - name: initialize a bare repo
+      ansible.builtin.shell: git init --bare
+      args:
+        creates: /home/appuser/my_project/.git
+        chdir: /home/appuser/my_project
+
+    - name: include git hook
+      become: yes
+      ansible.builtin.shell: cp /github_stargazers_prediction/hooks/* /home/appuser/my_project/hooks
+
+    - name: make it executable
+      become: yes
+      ansible.builtin.shell: chmod +x /home/appuser/my_project/hooks/*
+
+    - name: change owner to appuser
+      become: yes
+      ansible.builtin.shell: chown appuser:appuser /home/appuser/my_project/hooks/*

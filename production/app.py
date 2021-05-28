@@ -21,7 +21,7 @@ def predictions():
     if request.method == 'POST':
         results = get_predictions.delay()
         results = results.get()
-        return render_template('result.html', results=results)
+        return render_template('result.html', final_results=results)
 
     return '''<form method="POST">
     <input type="submit">

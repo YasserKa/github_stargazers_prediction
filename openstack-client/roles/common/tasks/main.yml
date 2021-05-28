@@ -1,0 +1,38 @@
+- name: Generate hosts file
+  lineinfile: dest=/etc/hosts
+              regexp='.*{{ item }}$'
+              line="{{ hostvars[item].ansible_default_ipv4.address }} {{item}}"
+              state=present
+  when: hostvars[item].ansible_default_ipv4.address is defined
+  with_items: "{{groups['all']}}"
+  become: true
+
+- name: Set hostname
+  hostname: name="{{inventory_hostname}}"
+  become: true
+
+- name: apt update
+  apt: update_cache=yes upgrade=dist
+  become: true
+
+- name: Checkout branch
+  become: yes
+  ignore_errors: yes
+  shell: git clone --branch cloud_architecture https://{{git_user|urlencode()}}:{{git_pass|urlencode()}}@github.com/YasserKa/github_stargazers_prediction.git
+  args:
+   chdir: /
+
+- name: Install pip3-pip
+  apt: pkg=python3-pip state=latest update_cache=true
+  become: true
+
+- name: Install python packages for ansible's docker module
+  become: yes
+  pip:
+   name: docker
+
+- name: Log into private registry
+  become: yes
+  community.docker.docker_login:
+    username: "{{docker_user}}"
+    password: "{{docker_pass}}"

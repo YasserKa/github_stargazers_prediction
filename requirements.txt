@@ -1,0 +1,7 @@
+requests
+pygithub
+dask[complete]
+dask[diagnostic]
+dask[distributed]
+dask[dataframe]
+dask-ml

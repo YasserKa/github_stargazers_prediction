@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test App</title>
+</head>
+<body>
+
+<table BORDER=1>
+<thead>
+<tr>
+<th>True</th><th>Predicted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+{% for val in range(7) %}
+
+<td>{{final_results['actual'][val]}}</td><td>{{final_results['predicted'][val]}}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+
+</body>
+</html>

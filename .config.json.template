@@ -1,0 +1,17 @@
+{
+    "git_extraction_script": {
+        "git_token": "my_token",
+        "least_stargazers": 50,
+        "number_of_repos_to_extract": 1000,
+        "fetch_contributors": true
+    },
+    "open_stack_instances": {
+        "identifier": "my_instances",
+        "flavor": "medium",
+        "private_net": "Network",
+        "image_id": "123-123-123",
+        "key_name": "key-pair",
+        "number_of_dask_workers": 3
+    }
+
+}

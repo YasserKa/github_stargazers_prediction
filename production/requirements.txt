@@ -1,0 +1,6 @@
+Flask
+amqp
+sklearn
+celery
+pandas
+future

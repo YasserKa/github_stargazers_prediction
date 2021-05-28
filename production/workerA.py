@@ -47,5 +47,5 @@ def get_predictions():
     results['actual'] = y.tolist()
     results['predicted'] = []
     for i in range(len(results['actual'])):
-        results['predicted'].append(predictions[i])
+        results['predicted'].append(int(predictions[i]))
     return results

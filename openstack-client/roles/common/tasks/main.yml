@@ -36,9 +36,3 @@
   community.docker.docker_login:
     username: "{{docker_user}}"
     password: "{{docker_pass}}"
-
-- name: Pull an image
-  become: yes
-  community.docker.docker_image:
-    name: yasserkaddoura/dask
-    source: pull

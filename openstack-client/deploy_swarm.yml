@@ -31,7 +31,7 @@
 # TODO: Make it join the swarm to make the services scalable, figure out how to
 # seperate the networks and services among nodes?
 - hosts: prodserver
-   tasks:
+  tasks:
    - name: Download docker-compose
      become: yes
      get_url:
@@ -91,11 +91,11 @@
        args:
          creates: /home/appuser/.ssh/id_rsa
 
-    - name: Copy Public Key Locally
-      fetch:
-        src: /home/appuser/.ssh/id_rsa.pub
-        dest: /tmp/
-        flat: yes
+     - name: Copy Public Key Locally
+       fetch:
+         src: /home/appuser/.ssh/id_rsa.pub
+         dest: /tmp/
+         flat: yes
 
      - name: create directory for repo
        ansible.builtin.shell: mkdir /home/appuser/my_project
@@ -109,9 +109,9 @@
          creates: /home/appuser/my_project/.git
 
      - name: add remote repo
-         ansible.builtin.shell: git remote add production appuser@prodserver:/home/appuser/my_project
-         args:
-           chdir: /home/appuser/my_project
+       ansible.builtin.shell: git remote add production appuser@prodserver:/home/appuser/my_project
+       args:
+         chdir: /home/appuser/my_project
 
 - hosts: prodserver
   tasks:

@@ -73,8 +73,7 @@ jupyter server list
 
 
 ## Getting repositories
-- Login to the dev server and update the configuration file for repository
-    extraction>
+- Login to the dev server and update the configuration file for repository extraction.
 ```
 {
     "git_token": "my_token",
